@@ -1,314 +1,900 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<title>Neves Fight - Sistema</title>
-
-<style>
-body {
-    font-family: Arial;
-    background: #ffffff; /* fundo branco */
-    color: #000000;
-    text-align: center;
-    margin: 0;
-}
-
-h1 {
-    color: #000000;
-    font-weight: bold; /* negrito */
-}
-
-input, select {
-    padding: 8px;
-    margin: 5px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-}
-
-button {
-    padding: 8px;
-    background: #007bff; /* azul padrão */
-    color: white; 
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 10px;
-}
-
-th, td {
-    border: 1px solid #ccc;
-    padding: 8px;
-}
-
-th {
-    background: #f2f2f2;
-    color: #000000;
-    font-weight: bold;
-}
-
-.container {
-    padding: 10px;
-}
-
-.hidden {
-    display: none;
-}
-
-.contadores {
-    margin-top: 10px;
-    font-weight: bold;
-}
-
-/* Responsivo */
-@media(max-width: 600px){
-    input, select {
-        width: 90%;
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Neves Fight</title>
+  <style>
+    :root {
+      --bg: #f5f7fb;
+      --card: #ffffff;
+      --text: #111827;
+      --muted: #6b7280;
+      --line: #e5e7eb;
+      --primary: #111827;
+      --accent: #dc2626;
+      --accent-2: #ef4444;
+      --success: #16a34a;
+      --warning: #f59e0b;
+      --danger: #dc2626;
+      --shadow: 0 10px 30px rgba(17, 24, 39, 0.08);
+      --radius: 20px;
     }
-}
-</style>
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background: linear-gradient(180deg, #f8fafc 0%, #eef2f7 100%);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    .container {
+      width: min(1180px, 92%);
+      margin: 0 auto;
+      padding: 24px 0 40px;
+    }
+
+    .login-screen {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      background:
+        radial-gradient(circle at top right, rgba(239, 68, 68, 0.16), transparent 24%),
+        radial-gradient(circle at bottom left, rgba(17, 24, 39, 0.08), transparent 24%),
+        linear-gradient(180deg, #f8fafc 0%, #eef2f7 100%);
+    }
+
+    .login-card,
+    .card {
+      background: var(--card);
+      border: 1px solid rgba(255,255,255,0.8);
+      box-shadow: var(--shadow);
+      border-radius: var(--radius);
+    }
+
+    .login-card {
+      width: min(430px, 100%);
+      padding: 30px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 22px;
+    }
+
+    .logo {
+      width: 54px;
+      height: 54px;
+      border-radius: 16px;
+      background: linear-gradient(135deg, var(--primary), #374151);
+      display: grid;
+      place-items: center;
+      color: white;
+      font-weight: 700;
+      font-size: 20px;
+      box-shadow: 0 10px 20px rgba(17,24,39,0.2);
+    }
+
+    .brand h1 {
+      font-size: 30px;
+      font-weight: 800;
+      letter-spacing: 0.3px;
+    }
+
+    .subtitle {
+      color: var(--muted);
+      font-size: 14px;
+      margin-bottom: 26px;
+      line-height: 1.5;
+    }
+
+    .app.hidden,
+    .login-screen.hidden,
+    .modal.hidden,
+    .empty.hidden {
+      display: none;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+
+    .field label {
+      font-size: 14px;
+      font-weight: 700;
+      color: #374151;
+    }
+
+    .field input,
+    .field select,
+    .field textarea {
+      width: 100%;
+      border: 1px solid var(--line);
+      background: #fff;
+      border-radius: 14px;
+      padding: 13px 14px;
+      font-size: 14px;
+      outline: none;
+      transition: 0.2s ease;
+    }
+
+    .field input:focus,
+    .field select:focus,
+    .field textarea:focus {
+      border-color: rgba(239, 68, 68, 0.55);
+      box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.12);
+    }
+
+    .btn {
+      border: none;
+      border-radius: 14px;
+      padding: 13px 18px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: 0.2s ease;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary), #1f2937);
+      color: white;
+    }
+
+    .btn-accent {
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color: white;
+    }
+
+    .btn-light {
+      background: #f3f4f6;
+      color: var(--text);
+    }
+
+    .btn-danger {
+      background: #fee2e2;
+      color: var(--danger);
+    }
+
+    .btn-success {
+      background: #dcfce7;
+      color: #166534;
+    }
+
+    .full {
+      width: 100%;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .topbar-left h1 {
+      font-size: 34px;
+      font-weight: 900;
+      color: var(--primary);
+    }
+
+    .topbar-left p {
+      color: var(--muted);
+      margin-top: 6px;
+    }
+
+    .topbar-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+
+    .stat-card {
+      padding: 18px;
+      background: rgba(255,255,255,0.78);
+      backdrop-filter: blur(8px);
+    }
+
+    .stat-label {
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 8px;
+      font-weight: 700;
+    }
+
+    .stat-value {
+      font-size: 28px;
+      font-weight: 900;
+      color: var(--primary);
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 360px 1fr;
+      gap: 18px;
+      align-items: start;
+    }
+
+    .card {
+      padding: 18px;
+    }
+
+    .card-title {
+      font-size: 18px;
+      font-weight: 800;
+      margin-bottom: 16px;
+      color: var(--primary);
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .form-grid .field.full-width {
+      grid-column: 1 / -1;
+    }
+
+    .form-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 8px;
+      flex-wrap: wrap;
+    }
+
+    .toolbar {
+      display: grid;
+      grid-template-columns: 1.4fr 1fr 1fr 1fr auto;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: white;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 980px;
+    }
+
+    th, td {
+      padding: 14px;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      font-size: 14px;
+      vertical-align: top;
+    }
+
+    th {
+      background: #f9fafb;
+      color: #374151;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+
+    tr:hover td {
+      background: #fcfcfd;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .tag-red { background: #fee2e2; color: #991b1b; }
+    .tag-gray { background: #e5e7eb; color: #374151; }
+    .tag-green { background: #dcfce7; color: #166534; }
+    .tag-blue { background: #dbeafe; color: #1d4ed8; }
+
+    .actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .mini-btn {
+      border: none;
+      border-radius: 10px;
+      padding: 9px 10px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .empty {
+      text-align: center;
+      padding: 30px 16px 14px;
+      color: var(--muted);
+    }
+
+    .empty strong {
+      color: var(--primary);
+      display: block;
+      margin-bottom: 6px;
+      font-size: 17px;
+    }
+
+    .footer-note {
+      margin-top: 12px;
+      color: var(--muted);
+      font-size: 12px;
+      text-align: right;
+    }
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(17, 24, 39, 0.45);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+      z-index: 999;
+    }
+
+    .modal-card {
+      width: min(500px, 100%);
+      background: white;
+      border-radius: 22px;
+      box-shadow: var(--shadow);
+      padding: 24px;
+    }
+
+    .modal-card h3 {
+      font-size: 22px;
+      margin-bottom: 10px;
+      color: var(--primary);
+    }
+
+    .modal-card p {
+      color: var(--muted);
+      line-height: 1.5;
+      margin-bottom: 18px;
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .hint {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: -4px;
+      margin-bottom: 12px;
+    }
+
+    @media (max-width: 980px) {
+      .stats {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .layout {
+        grid-template-columns: 1fr;
+      }
+
+      .toolbar {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .toolbar .full-mobile {
+        grid-column: 1 / -1;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .container {
+        width: min(95%, 95%);
+      }
+
+      .topbar {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .topbar-left h1 {
+        font-size: 28px;
+      }
+
+      .stats {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .toolbar {
+        grid-template-columns: 1fr;
+      }
+
+      .topbar-actions,
+      .form-actions,
+      .modal-actions {
+        width: 100%;
+      }
+
+      .topbar-actions .btn,
+      .form-actions .btn,
+      .modal-actions .btn {
+        width: 100%;
+      }
+    }
+  </style>
 </head>
-
 <body>
+  <section class="login-screen" id="loginScreen">
+    <div class="login-card">
+      <div class="brand">
+        <div class="logo">NF</div>
+        <div>
+          <h1>Neves Fight</h1>
+        </div>
+      </div>
+      <p class="subtitle">Entre no sistema para gerenciar seus alunos de forma rápida, bonita e organizada.</p>
 
-<!-- LOGIN -->
-<div id="login">
-    <h1>🔐 Neves Fight</h1>
-    <input type="password" id="senha" placeholder="Digite a senha">
-    <br>
-    <button onclick="entrar()">Entrar</button>
-</div>
+      <div class="field">
+        <label for="loginUser">Usuário</label>
+        <input type="text" id="loginUser" placeholder="Digite seu usuário" />
+      </div>
 
-<!-- SISTEMA -->
-<div id="sistema" class="hidden">
+      <div class="field">
+        <label for="loginPass">Senha</label>
+        <input type="password" id="loginPass" placeholder="Digite sua senha" />
+      </div>
 
-<h1>🥋 Sistema de Alunos</h1>
+      <p class="hint">Login padrão: <strong>admin</strong> | Senha: <strong>1234</strong></p>
 
-<div class="container">
+      <button class="btn btn-primary full" onclick="login()">Entrar no sistema</button>
+    </div>
+  </section>
 
-<input type="text" id="nome" placeholder="Nome completo">
-<input type="number" id="idade" placeholder="Idade">
+  <main class="app hidden" id="app">
+    <div class="container">
+      <header class="topbar">
+        <div class="topbar-left">
+          <h1>Neves Fight</h1>
+          <p>Controle de alunos com cadastro, busca, filtros e edição rápida.</p>
+        </div>
+        <div class="topbar-actions">
+          <button class="btn btn-light" onclick="exportarJSON()">Exportar dados</button>
+          <button class="btn btn-accent" onclick="logout()">Sair</button>
+        </div>
+      </header>
 
-<select id="turma">
-<option value="">Turma</option>
-<option>Manhã</option>
-<option>Tarde</option>
-<option>Noite</option>
-</select>
+      <section class="stats">
+        <div class="card stat-card">
+          <div class="stat-label">Total de alunos</div>
+          <div class="stat-value" id="statTotal">0</div>
+        </div>
+        <div class="card stat-card">
+          <div class="stat-label">Karatê</div>
+          <div class="stat-value" id="statKarate">0</div>
+        </div>
+        <div class="card stat-card">
+          <div class="stat-label">Personal</div>
+          <div class="stat-value" id="statPersonal">0</div>
+        </div>
+        <div class="card stat-card">
+          <div class="stat-label">Turmas ativas</div>
+          <div class="stat-value" id="statTurmas">0</div>
+        </div>
+      </section>
 
-<input type="text" id="mestre" placeholder="Mestre responsável">
+      <section class="layout">
+        <div class="card">
+          <h2 class="card-title" id="formTitle">Cadastrar aluno</h2>
 
-<select id="tipo">
-<option value="">Tipo</option>
-<option>Karatê</option>
-<option>Personal</option>
-</select>
+          <div class="form-grid">
+            <div class="field full-width">
+              <label for="nome">Nome completo</label>
+              <input type="text" id="nome" placeholder="Digite o nome do aluno" />
+            </div>
 
-<input type="text" id="telefone" placeholder="Telefone">
-<input type="date" id="data">
+            <div class="field">
+              <label for="idade">Idade</label>
+              <input type="number" id="idade" placeholder="Ex: 12" />
+            </div>
 
-<br>
-<button onclick="adicionarAluno()">Cadastrar / Atualizar</button>
-<button onclick="exportarCSV()">Exportar CSV</button>
+            <div class="field">
+              <label for="telefone">Telefone</label>
+              <input type="text" id="telefone" placeholder="Ex: (75) 99999-9999" />
+            </div>
 
-<br><br>
+            <div class="field">
+              <label for="turma">Turma</label>
+              <input type="text" id="turma" placeholder="Ex: Infantil / Adulto" />
+            </div>
 
-<input type="text" id="busca" placeholder="Buscar por nome" onkeyup="renderizar()">
+            <div class="field">
+              <label for="modalidade">Modalidade</label>
+              <select id="modalidade">
+                <option value="">Selecione</option>
+                <option value="Karatê">Karatê</option>
+                <option value="Personal">Personal</option>
+              </select>
+            </div>
 
-<select id="filtro" onchange="renderizar()">
-<option value="">Todos</option>
-<option>Karatê</option>
-<option>Personal</option>
-</select>
+            <div class="field">
+              <label for="mestre">Mestre responsável</label>
+              <input type="text" id="mestre" placeholder="Ex: Mestre João" />
+            </div>
 
-<div class="contadores">
-<span id="totalAlunos">Total: 0</span> |
-<span id="totalKarate">Karatê: 0</span> |
-<span id="totalPersonal">Personal: 0</span>
-</div>
+            <div class="field">
+              <label for="dataMatricula">Data da matrícula</label>
+              <input type="date" id="dataMatricula" />
+            </div>
 
-</div>
+            <div class="field full-width">
+              <label for="observacoes">Observações</label>
+              <textarea id="observacoes" rows="3" placeholder="Informações extras do aluno"></textarea>
+            </div>
+          </div>
 
-<table>
-<thead>
-<tr>
-<th>Nome</th>
-<th>Idade</th>
-<th>Turma</th>
-<th>Mestre</th>
-<th>Tipo</th>
-<th>Telefone</th>
-<th>Data</th>
-<th>Ação</th>
-</tr>
-</thead>
+          <div class="form-actions">
+            <button class="btn btn-primary" onclick="salvarAluno()" id="saveBtn">Salvar aluno</button>
+            <button class="btn btn-light" onclick="limparFormulario()">Limpar</button>
+          </div>
+        </div>
 
-<tbody id="lista"></tbody>
-</table>
+        <div class="card">
+          <h2 class="card-title">Alunos cadastrados</h2>
 
-</div>
+          <div class="toolbar">
+            <div class="field full-mobile" style="margin-bottom: 0;">
+              <label for="busca">Buscar por nome</label>
+              <input type="text" id="busca" placeholder="Digite para buscar..." oninput="renderizarAlunos()" />
+            </div>
 
-<script>
-let editarIndex = -1; // Para controle de edição
+            <div class="field" style="margin-bottom: 0;">
+              <label for="filtroTurma">Filtrar por turma</label>
+              <select id="filtroTurma" onchange="renderizarAlunos()">
+                <option value="">Todas</option>
+              </select>
+            </div>
 
-// LOGIN SIMPLES
-function entrar(){
-    let senha = document.getElementById("senha").value;
+            <div class="field" style="margin-bottom: 0;">
+              <label for="filtroModalidade">Modalidade</label>
+              <select id="filtroModalidade" onchange="renderizarAlunos()">
+                <option value="">Todas</option>
+                <option value="Karatê">Karatê</option>
+                <option value="Personal">Personal</option>
+              </select>
+            </div>
 
-    if(senha === "1234"){ // você pode mudar a senha aqui
-        document.getElementById("login").classList.add("hidden");
-        document.getElementById("sistema").classList.remove("hidden");
-        renderizar();
-    } else {
-        alert("Senha incorreta!");
+            <div class="field" style="margin-bottom: 0;">
+              <label for="filtroMestre">Mestre</label>
+              <select id="filtroMestre" onchange="renderizarAlunos()">
+                <option value="">Todos</option>
+              </select>
+            </div>
+
+            <div class="field" style="margin-bottom: 0; align-self: end;">
+              <button class="btn btn-light" onclick="limparFiltros()">Limpar filtros</button>
+            </div>
+          </div>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Aluno</th>
+                  <th>Idade</th>
+                  <th>Telefone</th>
+                  <th>Turma</th>
+                  <th>Modalidade</th>
+                  <th>Mestre</th>
+                  <th>Matrícula</th>
+                  <th>Observações</th>
+                  <th>Ações</th>
+                </tr>
+              </thead>
+              <tbody id="listaAlunos"></tbody>
+            </table>
+          </div>
+
+          <div class="empty hidden" id="emptyState">
+            <strong>Nenhum aluno encontrado</strong>
+            Ajuste os filtros ou cadastre um novo aluno.
+          </div>
+
+          <div class="footer-note">Os dados ficam salvos neste navegador.</div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <div class="modal hidden" id="confirmModal">
+    <div class="modal-card">
+      <h3>Excluir aluno</h3>
+      <p>Tem certeza que deseja excluir este aluno? Essa ação não poderá ser desfeita.</p>
+      <div class="modal-actions">
+        <button class="btn btn-light" onclick="fecharModal()">Cancelar</button>
+        <button class="btn btn-danger" onclick="confirmarExclusao()">Excluir</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const STORAGE_KEY = 'neves_fight_alunos';
+    const LOGIN_KEY = 'neves_fight_logado';
+
+    let alunos = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+    let editandoId = null;
+    let alunoParaExcluir = null;
+
+    function salvarStorage() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(alunos));
     }
-}
 
-// SALVAR NO NAVEGADOR
-function pegarDados(){
-    return JSON.parse(localStorage.getItem("alunos") || "[]");
-}
+    function login() {
+      const user = document.getElementById('loginUser').value.trim();
+      const pass = document.getElementById('loginPass').value.trim();
 
-function salvarDados(dados){
-    localStorage.setItem("alunos", JSON.stringify(dados));
-}
+      if (user === 'admin' && pass === '1234') {
+        localStorage.setItem(LOGIN_KEY, 'true');
+        mostrarApp();
+      } else {
+        alert('Usuário ou senha incorretos.');
+      }
+    }
 
-// ADICIONAR / ATUALIZAR
-function adicionarAluno(){
-    let dados = pegarDados();
+    function logout() {
+      localStorage.removeItem(LOGIN_KEY);
+      document.getElementById('app').classList.add('hidden');
+      document.getElementById('loginScreen').classList.remove('hidden');
+      document.getElementById('loginUser').value = '';
+      document.getElementById('loginPass').value = '';
+    }
 
-    let aluno = {
-        nome: nome.value,
-        idade: idade.value,
-        turma: turma.value,
-        mestre: mestre.value,
-        tipo: tipo.value,
-        telefone: telefone.value,
-        data: data.value
-    };
+    function mostrarApp() {
+      document.getElementById('loginScreen').classList.add('hidden');
+      document.getElementById('app').classList.remove('hidden');
+      atualizarFiltros();
+      renderizarAlunos();
+      atualizarStats();
+    }
 
-    if(Object.values(aluno).includes("")){
-        alert("Preencha tudo!");
+    function limparFormulario() {
+      document.getElementById('nome').value = '';
+      document.getElementById('idade').value = '';
+      document.getElementById('telefone').value = '';
+      document.getElementById('turma').value = '';
+      document.getElementById('modalidade').value = '';
+      document.getElementById('mestre').value = '';
+      document.getElementById('dataMatricula').value = '';
+      document.getElementById('observacoes').value = '';
+      editandoId = null;
+      document.getElementById('formTitle').textContent = 'Cadastrar aluno';
+      document.getElementById('saveBtn').textContent = 'Salvar aluno';
+    }
+
+    function salvarAluno() {
+      const nome = document.getElementById('nome').value.trim();
+      const idade = document.getElementById('idade').value.trim();
+      const telefone = document.getElementById('telefone').value.trim();
+      const turma = document.getElementById('turma').value.trim();
+      const modalidade = document.getElementById('modalidade').value.trim();
+      const mestre = document.getElementById('mestre').value.trim();
+      const dataMatricula = document.getElementById('dataMatricula').value;
+      const observacoes = document.getElementById('observacoes').value.trim();
+
+      if (!nome || !idade || !telefone || !turma || !modalidade || !mestre || !dataMatricula) {
+        alert('Preencha todos os campos obrigatórios.');
         return;
+      }
+
+      const aluno = {
+        id: editandoId || Date.now(),
+        nome,
+        idade,
+        telefone,
+        turma,
+        modalidade,
+        mestre,
+        dataMatricula,
+        observacoes
+      };
+
+      if (editandoId) {
+        alunos = alunos.map(a => a.id === editandoId ? aluno : a);
+      } else {
+        alunos.unshift(aluno);
+      }
+
+      salvarStorage();
+      limparFormulario();
+      atualizarFiltros();
+      renderizarAlunos();
+      atualizarStats();
     }
 
-    if(editarIndex >= 0){
-        dados[editarIndex] = aluno;
-        editarIndex = -1;
-    } else {
-        dados.push(aluno);
+    function editarAluno(id) {
+      const aluno = alunos.find(a => a.id === id);
+      if (!aluno) return;
+
+      document.getElementById('nome').value = aluno.nome;
+      document.getElementById('idade').value = aluno.idade;
+      document.getElementById('telefone').value = aluno.telefone;
+      document.getElementById('turma').value = aluno.turma;
+      document.getElementById('modalidade').value = aluno.modalidade;
+      document.getElementById('mestre').value = aluno.mestre;
+      document.getElementById('dataMatricula').value = aluno.dataMatricula;
+      document.getElementById('observacoes').value = aluno.observacoes || '';
+
+      editandoId = id;
+      document.getElementById('formTitle').textContent = 'Editar aluno';
+      document.getElementById('saveBtn').textContent = 'Atualizar aluno';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    salvarDados(dados);
-    limpar();
-    renderizar();
-}
+    function pedirExclusao(id) {
+      alunoParaExcluir = id;
+      document.getElementById('confirmModal').classList.remove('hidden');
+    }
 
-// LIMPAR CAMPOS
-function limpar(){
-    nome.value = "";
-    idade.value = "";
-    turma.value = "";
-    mestre.value = "";
-    tipo.value = "";
-    telefone.value = "";
-    data.value = "";
-}
+    function fecharModal() {
+      alunoParaExcluir = null;
+      document.getElementById('confirmModal').classList.add('hidden');
+    }
 
-// EXCLUIR
-function excluir(index){
-    let dados = pegarDados();
-    dados.splice(index,1);
-    salvarDados(dados);
-    renderizar();
-}
+    function confirmarExclusao() {
+      if (!alunoParaExcluir) return;
+      alunos = alunos.filter(a => a.id !== alunoParaExcluir);
+      salvarStorage();
+      atualizarFiltros();
+      renderizarAlunos();
+      atualizarStats();
+      fecharModal();
+      if (editandoId === alunoParaExcluir) limparFormulario();
+    }
 
-// EDITAR
-function editar(index){
-    let dados = pegarDados();
-    let aluno = dados[index];
+    function atualizarFiltros() {
+      const turmaSelect = document.getElementById('filtroTurma');
+      const mestreSelect = document.getElementById('filtroMestre');
 
-    nome.value = aluno.nome;
-    idade.value = aluno.idade;
-    turma.value = aluno.turma;
-    mestre.value = aluno.mestre;
-    tipo.value = aluno.tipo;
-    telefone.value = aluno.telefone;
-    data.value = aluno.data;
+      const turmaAtual = turmaSelect.value;
+      const mestreAtual = mestreSelect.value;
 
-    editarIndex = index;
-}
+      const turmas = [...new Set(alunos.map(a => a.turma).filter(Boolean))].sort((a,b) => a.localeCompare(b, 'pt-BR'));
+      const mestres = [...new Set(alunos.map(a => a.mestre).filter(Boolean))].sort((a,b) => a.localeCompare(b, 'pt-BR'));
 
-// RENDERIZAR
-function renderizar(){
-    let lista = document.getElementById("lista");
-    lista.innerHTML = "";
+      turmaSelect.innerHTML = '<option value="">Todas</option>' + turmas.map(t => `<option value="${escapeHTML(t)}">${escapeHTML(t)}</option>`).join('');
+      mestreSelect.innerHTML = '<option value="">Todos</option>' + mestres.map(m => `<option value="${escapeHTML(m)}">${escapeHTML(m)}</option>`).join('');
 
-    let dados = pegarDados();
-    let busca = document.getElementById("busca").value.toLowerCase();
-    let filtro = document.getElementById("filtro").value;
+      turmaSelect.value = turmas.includes(turmaAtual) ? turmaAtual : '';
+      mestreSelect.value = mestres.includes(mestreAtual) ? mestreAtual : '';
+    }
 
-    let total = 0;
-    let totalK = 0;
-    let totalP = 0;
+    function limparFiltros() {
+      document.getElementById('busca').value = '';
+      document.getElementById('filtroTurma').value = '';
+      document.getElementById('filtroModalidade').value = '';
+      document.getElementById('filtroMestre').value = '';
+      renderizarAlunos();
+    }
 
-    dados.forEach((aluno, index) => {
+    function renderizarAlunos() {
+      const lista = document.getElementById('listaAlunos');
+      const busca = document.getElementById('busca').value.trim().toLowerCase();
+      const filtroTurma = document.getElementById('filtroTurma').value;
+      const filtroModalidade = document.getElementById('filtroModalidade').value;
+      const filtroMestre = document.getElementById('filtroMestre').value;
 
-        if(busca && !aluno.nome.toLowerCase().includes(busca)) return;
-        if(filtro && aluno.tipo !== filtro) return;
+      const filtrados = alunos.filter(aluno => {
+        const matchBusca = aluno.nome.toLowerCase().includes(busca);
+        const matchTurma = !filtroTurma || aluno.turma === filtroTurma;
+        const matchModalidade = !filtroModalidade || aluno.modalidade === filtroModalidade;
+        const matchMestre = !filtroMestre || aluno.mestre === filtroMestre;
+        return matchBusca && matchTurma && matchModalidade && matchMestre;
+      });
 
-        total++;
-        if(aluno.tipo === "Karatê") totalK++;
-        if(aluno.tipo === "Personal") totalP++;
+      lista.innerHTML = '';
 
-        let linha = `
-        <tr>
-        <td>${aluno.nome}</td>
-        <td>${aluno.idade}</td>
-        <td>${aluno.turma}</td>
-        <td>${aluno.mestre}</td>
-        <td>${aluno.tipo}</td>
-        <td>${aluno.telefone}</td>
-        <td>${aluno.data}</td>
-        <td>
-            <button onclick="editar(${index})">✏️</button>
-            <button onclick="excluir(${index})">❌</button>
-        </td>
-        </tr>
+      if (filtrados.length === 0) {
+        document.getElementById('emptyState').classList.remove('hidden');
+      } else {
+        document.getElementById('emptyState').classList.add('hidden');
+      }
+
+      filtrados.forEach(aluno => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td><strong>${escapeHTML(aluno.nome)}</strong></td>
+          <td>${escapeHTML(aluno.idade)}</td>
+          <td>${escapeHTML(aluno.telefone)}</td>
+          <td><span class="tag tag-gray">${escapeHTML(aluno.turma)}</span></td>
+          <td>${aluno.modalidade === 'Karatê'
+            ? '<span class="tag tag-red">Karatê</span>'
+            : '<span class="tag tag-blue">Personal</span>'}</td>
+          <td>${escapeHTML(aluno.mestre)}</td>
+          <td>${formatarData(aluno.dataMatricula)}</td>
+          <td>${escapeHTML(aluno.observacoes || '-')}</td>
+          <td>
+            <div class="actions">
+              <button class="mini-btn btn-success" onclick="editarAluno(${aluno.id})">Editar</button>
+              <button class="mini-btn btn-danger" onclick="pedirExclusao(${aluno.id})">Excluir</button>
+            </div>
+          </td>
         `;
-
-        lista.innerHTML += linha;
-    });
-
-    document.getElementById("totalAlunos").innerText = `Total: ${total}`;
-    document.getElementById("totalKarate").innerText = `Karatê: ${totalK}`;
-    document.getElementById("totalPersonal").innerText = `Personal: ${totalP}`;
-}
-
-// EXPORTAR CSV
-function exportarCSV(){
-    let dados = pegarDados();
-    if(dados.length === 0){
-        alert("Não há dados para exportar!");
-        return;
+        lista.appendChild(tr);
+      });
     }
 
-    let csv = "Nome,Idade,Turma,Mestre,Tipo,Telefone,Data\n";
-    dados.forEach(a => {
-        csv += `${a.nome},${a.idade},${a.turma},${a.mestre},${a.tipo},${a.telefone},${a.data}\n`;
-    });
+    function atualizarStats() {
+      document.getElementById('statTotal').textContent = alunos.length;
+      document.getElementById('statKarate').textContent = alunos.filter(a => a.modalidade === 'Karatê').length;
+      document.getElementById('statPersonal').textContent = alunos.filter(a => a.modalidade === 'Personal').length;
+      document.getElementById('statTurmas').textContent = new Set(alunos.map(a => a.turma).filter(Boolean)).size;
+    }
 
-    let blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-    let link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-    link.download = "alunos.csv";
-    link.click();
-}
-</script>
+    function exportarJSON() {
+      const blob = new Blob([JSON.stringify(alunos, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'neves-fight-alunos.json';
+      a.click();
+      URL.revokeObjectURL(url);
+    }
 
+    function formatarData(data) {
+      if (!data) return '-';
+      const [ano, mes, dia] = data.split('-');
+      return `${dia}/${mes}/${ano}`;
+    }
+
+    function escapeHTML(texto) {
+      return String(texto)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    if (localStorage.getItem(LOGIN_KEY) === 'true') {
+      mostrarApp();
+    }
+  </script>
 </body>
 </html>
